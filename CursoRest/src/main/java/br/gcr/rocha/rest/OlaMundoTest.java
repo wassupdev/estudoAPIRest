@@ -4,17 +4,10 @@ import static io.restassured.RestAssured.given;
 
 import static io.restassured.RestAssured.request;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.startsWith;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.hamcrest.Matchers;
+import static org.junit.jupiter.api.Assertions.*;
+
+import static org.hamcrest.Matchers.*;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.http.Method;

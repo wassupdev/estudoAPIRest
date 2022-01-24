@@ -1,12 +1,8 @@
 package br.gcr.rocha.rest;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 
@@ -36,20 +32,6 @@ public class UserXMLTest {
 		.body("name", hasItems("Luizinho", "Zezinho"))
 		;
 	}
-
-	/*
-	@Test
-	public void testeTrabalharUser1() {
-		given()
-		.when()
-		.get("https://restapi.wcaquino.me/usersxml")
-		.then()
-		.statusCode(200)
-		.rootPath("users")
-		.body("user[0].name", is("João da Silva"))
-		;
-	}
-	*/
 	
 	@Test
 	public void testeFazerPesquisasAvancadasXML() {
