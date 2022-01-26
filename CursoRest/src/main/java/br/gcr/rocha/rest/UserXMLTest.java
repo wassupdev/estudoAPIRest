@@ -1,24 +1,49 @@
 package br.gcr.rocha.rest;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
 
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import io.restassured.internal.path.xml.NodeImpl;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 
 public class UserXMLTest {
+	
+	public static RequestSpecification reqSpec;
+	public static ResponseSpecification resSpec;
+	
+	@BeforeAll
+	public static void setup() {
+		RestAssured.baseURI = "https://restapi.wcaquino.me";
+		RequestSpecBuilder reqBuilder = new RequestSpecBuilder();
+		reqBuilder.log(LogDetail.ALL);
+		reqSpec = reqBuilder.build();
+		ResponseSpecBuilder resBuilder = new ResponseSpecBuilder();
+		resBuilder.expectStatusCode(200);
+		resSpec = resBuilder.build();
+	}
 
 	@Test
 	public void testeTrabalharComXML() {
+		
+		
 		given()
+		.spec(reqSpec)
 		.when()
-		.get("https://restapi.wcaquino.me/usersxml/3")
+		.get("/usersxml/3")
 		.then()
-		.statusCode(200)
+		.spec(resSpec)
+		//.statusCode(200)
 		.rootPath("user")
 		.body("name", is("Ana Julia"))
 		.body("@id", is("3"))
@@ -34,10 +59,20 @@ public class UserXMLTest {
 	}
 	
 	@Test
+	public void testeAlternativasDeUso() {	
+		given()
+		//.log().all())
+		.when()
+		.get("/users")
+		.then()
+		.statusCode(200);
+	}
+	
+	@Test
 	public void testeFazerPesquisasAvancadasXML() {
 		given()
 		.when()
-		.get("https://restapi.wcaquino.me/usersxml")
+		.get("/usersxml")
 		.then()
 		.statusCode(200)
 		.rootPath("users.user")
@@ -56,7 +91,7 @@ public class UserXMLTest {
 	public void testeUnirXMLPathEJava() {
 		ArrayList<NodeImpl> nomesComN = given()
 		.when()
-		.get("https://restapi.wcaquino.me/usersxml")
+		.get("/usersxml")
 		.then()
 		.statusCode(200).extract().path("users.user.name.findAll{it.toString().contains('n')}");
 		
@@ -69,7 +104,7 @@ public class UserXMLTest {
 	public void testePesquisasAvancadasComXPath() {
 		given()
 		.when()
-		.get("https://restapi.wcaquino.me/usersxml")
+		.get("/usersxml")
 		.then()
 		.statusCode(200)
 		.body(hasXPath("count(/users/user)", is("3")))
