@@ -2,8 +2,12 @@ package br.gcr.rocha.rest;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.http.ContentType;
@@ -58,8 +62,6 @@ public class VerbosTeste {
 		.body("id", is(notNullValue()))
 		.body("user.name", is("Ednaldo"))
 		.body("user.age", is("50"))
-		//.body("name", is("Ednaldo"))
-		//.body("age", is(50))
 		;
 	}
 	
@@ -144,4 +146,107 @@ public class VerbosTeste {
 		.body("error", is("Registro inexistente"))
 		;
 	}
-}
+	
+	@Test
+	public void testeSalvarUsuarioUsandoMap() {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("name", "Usuário via map");
+		params.put("age", 25);
+		
+		given()
+		.log().all()
+		.contentType("application/json")
+		.body(params)
+		.when()
+			.post("https://restapi.wcaquino.me/users")
+		.then()
+		.log().all()
+		.statusCode(201)
+		.body("id", is(notNullValue()))
+		.body("name", is("Usuário via map"))
+		.body("age", is(25))
+		;
+	
+	}
+	
+	@Test
+	public void testeSalvarUsuarioUsandoObjeto() {
+		User user = new User("Usuario via objeto", 35);
+		
+		given()
+		.log().all()
+		.contentType("application/json")
+		.body(user)
+		.when()
+			.post("https://restapi.wcaquino.me/users")
+		.then()
+		.log().all()
+		.statusCode(201)
+		.body("id", is(notNullValue()))
+		.body("name", is("Usuario via objeto"))
+		.body("age", is(35))
+		;
+	}
+	
+	@Test
+	public void testeDeserializarObjetoAoSalvarObjeto() {
+		User user = new User("Usuario deserializado", 35, 2000.00);
+		
+		User usuarioInserido = given()
+		.log().all()
+		.contentType("application/json")
+		.body(user)
+		.when()
+			.post("https://restapi.wcaquino.me/users")
+		.then()
+		.log().all()
+		.statusCode(201)
+		.extract().body().as(User.class)
+		;
+		System.out.println(usuarioInserido);
+		assertEquals("Usuario deserializado", usuarioInserido.getName());
+		assertThat(usuarioInserido.getAge(), is(35));
+		assertThat(usuarioInserido.getId(), is(notNullValue()));
+		assertThat(usuarioInserido.getSalary(), is(2000.00));
+	}
+	
+	@Test
+	public void testeSalvarUsuarioViaXMLUsandoObjeto() {
+		User user = new User("Usuario XML", 45);
+		
+		given()
+		.log().all()
+		.contentType(ContentType.XML)
+		.body(user)
+		.when()
+			.post("https://restapi.wcaquino.me/usersxml")
+		.then()
+		.log().all()
+		.statusCode(201)
+		.body("id", is(notNullValue()))
+		.body("user.name", is("Usuario XML"))
+		.body("user.age", is("45"))
+		;
+	
+	}
+	
+	@Test
+	public void testeDeserializarXMLAoSalvarUsuario() {
+		
+		User user = new User("Usuario XML", 45);
+			
+		User usuarioInserido = given()
+		.log().all()
+		.contentType(ContentType.XML)
+		.body(user)
+		.when()
+			.post("https://restapi.wcaquino.me/usersxml")
+		.then()
+			.log().all()
+			.statusCode(201)
+			.extract().body().as(User.class)
+			;
+		System.out.println(usuarioInserido);
+		}
+	}
+
