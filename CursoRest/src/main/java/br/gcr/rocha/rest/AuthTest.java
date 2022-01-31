@@ -16,6 +16,8 @@ import io.restassured.path.xml.XmlPath.CompatibilityMode;
 
 
 public class AuthTest {
+	
+	String tokenOpenWeatherMap;
 
 	@Test
 	public void testeSWAPI() {
@@ -37,7 +39,7 @@ public class AuthTest {
 		given()
 		.log().all()
 		.queryParam("q", "Sao Paulo")
-		.queryParam("appid", "c968deb7749e3159b7291c4fe38525a9")
+		.queryParam("appid", tokenOpenWeatherMap)
 		.queryParam("units", "metric")
 	.when()
 		.get("https://api.openweathermap.org/data/2.5/weather")
