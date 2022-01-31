@@ -1,6 +1,7 @@
 package br.gcr.rocha.rest;
 
 import static io.restassured.RestAssured.*;
+
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
